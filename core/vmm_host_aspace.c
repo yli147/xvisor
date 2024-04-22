@@ -1036,7 +1036,11 @@ static int __init host_aspace_init_primary(void)
 			return rc;
 		}
 	}
-
+	/* This is reserve u-boot and opensbi memory region */
+	if ((rc = vmm_host_ram_reserve(0x80000000, 0xC00000))) {
+		vmm_init_printf("ram_server: phys=0x80000000, size=0xC00000 for opensbi and uboot\n");
+		return rc;
+	}
 	/* Setup temporary virtual address for physical read/write */
 	for (cpu = 0; cpu < CONFIG_CPU_COUNT; cpu++) {
 		rc = vmm_host_vapool_alloc(&host_mem_rw_va[cpu],
