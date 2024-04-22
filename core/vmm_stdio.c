@@ -146,7 +146,8 @@ int vmm_printchars(struct vmm_chardev *cdev, char *ch, u32 num_ch, bool block)
 		}
 	} else {
 		for (i = 0; i < num_ch; i++) {
-			arch_defterm_early_putc(ch[i]);
+			//arch_defterm_early_putc(ch[i]);
+			while ((rc = sbi_console_putchar((u8)ch[i])) && block);
 		}
 		rc = VMM_OK;
 	}
