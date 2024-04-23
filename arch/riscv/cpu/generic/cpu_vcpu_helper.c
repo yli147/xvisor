@@ -89,10 +89,12 @@ int arch_guest_init(struct vmm_guest *guest)
 	int rc;
 
 	if (!guest->reset_count) {
+#if 0
 		if (!riscv_isa_extension_available(NULL, h) ||
 		    !sbi_has_0_2_rfence())
 			return VMM_EINVALID;
 
+#endif		
 		guest->arch_priv = vmm_malloc(sizeof(struct riscv_guest_priv));
 		if (!guest->arch_priv) {
 			return VMM_ENOMEM;

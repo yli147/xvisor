@@ -319,7 +319,9 @@ int __init arch_cpu_nascent_init(void)
 	vmm_devtree_dref_node(cpus);
 
 	/* Setup Stage2 mode and Stage2 VMID bits */
-	if (riscv_isa_extension_available(NULL, h)) {
+//	if (riscv_isa_extension_available(NULL, h)) {
+
+
 		csr_write(CSR_HGATP, HGATP_VMID);
 		val = csr_read(CSR_HGATP) & HGATP_VMID;
 		riscv_stage2_vmid_bits = fls_long(val >> HGATP_VMID_SHIFT);
@@ -347,7 +349,7 @@ skip_hgatp_sv48x4_test:
 
 		csr_write(CSR_HGATP, 0);
 		__hfence_gvma_all();
-	}
+//	}
 
 	return rc;
 }

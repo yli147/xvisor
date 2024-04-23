@@ -206,7 +206,7 @@ int __cpuinit arch_cpu_irq_setup(void)
 {
 	extern unsigned long _handle_exception[];
 	extern unsigned long _handle_hyp_exception[];
-
+#if 0
 	if (riscv_isa_extension_available(NULL, h)) {
 		/* Update HEDELEG */
 		csr_write(CSR_HEDELEG, HEDELEG_DEFAULT);
@@ -220,6 +220,16 @@ int __cpuinit arch_cpu_irq_setup(void)
 		/* Setup final exception handler */
 		csr_write(CSR_STVEC, (virtual_addr_t)&_handle_exception);
 	}
+#else
+		/* Force enabled H-extenstion */
+		/* Update HEDELEG */
+		csr_write(CSR_HEDELEG, HEDELEG_DEFAULT);
 
+		/* Update HCOUNTEREN */
+		csr_write(CSR_HCOUNTEREN, HCOUNTEREN_DEFAULT);
+
+		/* Setup final exception handler with hypervisor enabled */
+		csr_write(CSR_STVEC, (virtual_addr_t)&_handle_hyp_exception);							
+#endif
 	return VMM_OK;
 }

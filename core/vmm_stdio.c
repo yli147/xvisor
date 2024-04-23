@@ -879,6 +879,10 @@ static void __init flush_early_buffer(void)
 	int i;
 
 	if (!stdio_init_done) {
+		/* Force to use sbi call to ouput */
+		for (i = 0; i < stdio_early_count; i++) {
+			sbi_console_putchar(stdio_early_buffer[i]);
+		}
 		return;
 	}
 
