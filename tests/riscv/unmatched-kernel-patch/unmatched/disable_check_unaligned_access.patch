@@ -1,0 +1,40 @@
+--- ./linux-6.8/arch/riscv/kernel/cpufeature.c	2024-03-11 04:38:09.000000000 +0800
++++ ../0421-XVisor/linux-6.8/arch/riscv/kernel/cpufeature.c	2024-04-24 16:39:39.974746649 +0800
+@@ -733,6 +733,7 @@ unsigned long riscv_get_elf_hwcap(void)
+ 
+ static int check_unaligned_access(void *param)
+ {
++#if 0
+ 	int cpu = smp_processor_id();
+ 	u64 start_cycles, end_cycles;
+ 	u64 word_cycles;
+@@ -743,9 +744,9 @@ static int check_unaligned_access(void *
+ 	void *dst;
+ 	void *src;
+ 	long speed = RISCV_HWPROBE_MISALIGNED_SLOW;
+-
+-	if (check_unaligned_access_emulated(cpu))
++	if (check_unaligned_access_emulated(cpu)) {
+ 		return 0;
++	}
+ 
+ 	/* Make an unaligned destination buffer. */
+ 	dst = (void *)((unsigned long)page_address(page) | 0x1);
+@@ -754,7 +755,9 @@ static int check_unaligned_access(void *
+ 	src += 2;
+ 	word_cycles = -1ULL;
+ 	/* Do a warmup. */
++	printk(KERN_ALERT "__riscv_copy_words_unaligned %08lx %08lx %08lx\n", dst, src,MISALIGNED_COPY_SIZE);
+ 	__riscv_copy_words_unaligned(dst, src, MISALIGNED_COPY_SIZE);
++	printk(KERN_ALERT "__riscv_copy_words_unaligned end %08lx %08lx %08lx\n", dst, src,MISALIGNED_COPY_SIZE);
+ 	preempt_disable();
+ 	start_jiffies = jiffies;
+ 	while ((now = jiffies) == start_jiffies)
+@@ -822,6 +825,7 @@ static int check_unaligned_access(void *
+ 		cpumask_set_cpu(cpu, &fast_misaligned_access);
+ 	else
+ 		cpumask_clear_cpu(cpu, &fast_misaligned_access);
++#endif
+ 
+ 	return 0;
+ }
